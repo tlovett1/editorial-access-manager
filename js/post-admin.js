@@ -2,11 +2,11 @@
 
 	var $rolesSelect = $( document.getElementById( 'eam_allowed_roles' ) );
 	var $usersSelect = $( document.getElementById( 'eam_allowed_users' ) );
-	var $accessControlEnableCheckbox = $( document.getElementById( 'eam_enable_custom_access' ) );
-	var $accessControls = $( document.getElementById( 'eam_custom_access_controls' ) );
+	var $accessControlSelect = $( document.getElementById( 'eam_enable_custom_access' ) );
+	var $roleControls = $( document.getElementById( 'eam_control_roles' ) );
+	var $usersControls = $( document.getElementById( 'eam_control_users' ) );
 
 	$rolesSelect.chosen( {
-		disable_search_threshold: 99,
 		width: '90%'
 	});
 
@@ -14,12 +14,21 @@
 		width: '90%'
 	});
 
-	/*$accessControlEnableCheckbox.on( 'change', function() {
-		if ( $accessControls.is( ':visible' ) ) {
-			$accessControls.hide();
+	function conditionallyRevealControls() {
+		if ( $accessControlSelect.val() == 'users' ) {
+			$usersControls.show();
+			$roleControls.hide();
+		} else if ( $accessControlSelect.val() == 'roles' ) {
+			$usersControls.hide();
+			$roleControls.show();
 		} else {
-			$accessControls.show();
+			$usersControls.hide();
+			$roleControls.hide();
 		}
-	} );*/
+	}
+
+	conditionallyRevealControls();
+
+	$accessControlSelect.on( 'change', conditionallyRevealControls );
 
 })( jQuery );

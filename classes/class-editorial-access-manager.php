@@ -18,7 +18,7 @@ class Editorial_Access_Manager {
 		add_action( 'add_meta_boxes', array( $this, 'action_add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'action_save_post' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
-		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap_roles' ), 10, 4 );
+		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 10, 4 );
 	}
 
 	/**
@@ -31,18 +31,34 @@ class Editorial_Access_Manager {
 	 * @since 0.1.0
 	 * @return array
 	 */
-	public function map_meta_cap_roles( $caps, $cap, $user_id, $args ) {
+	public function filter_map_meta_cap( $caps, $cap, $user_id, $args ) {
 		if ( 'edit_post' == $cap ) {
 
 			$enable_custom_access = get_post_meta( (int) $args[0], 'eam_enable_custom_access', true );
 
-			if ( $enable_custom_access ) {
-
-				$allowed_roles = get_post_meta( (int) $args[0], 'eam_allowed_roles', true );
+			if ( ! empty( $enable_custom_access ) ) {
 				$user = new WP_User( $user_id );
 
-				if ( ! in_array( 'administrator', $user->roles ) && ! empty( $allowed_roles ) && count( array_diff( $user->roles, $allowed_roles ) ) >= 1 ) {
-					$caps[] = 'do_not_allow';
+				// If user is admin, we do nothing
+				if ( ! in_array( 'administrator', $user->roles ) ) {
+
+					if ( 'roles' == $enable_custom_access ) {
+						// Limit access to whitelisted roles
+
+						$allowed_roles = (array) get_post_meta( (int) $args[0], 'eam_allowed_roles', true );
+
+						if ( count( array_diff( $user->roles, $allowed_roles ) ) >= 1 ) {
+							$caps[] = 'do_not_allow';
+						}
+					} elseif ( 'users' == $enable_custom_access ) {
+						// Limit access to whitelisted users
+
+						$allowed_users = (array) get_post_meta( (int) $args[0], 'eam_allowed_users', true );
+
+						if ( ! in_array( $user_id, $allowed_users ) ) {
+							$caps[] = 'do_not_allow';
+						}
+					}
 				}
 			}
 		}
@@ -106,29 +122,32 @@ class Editorial_Access_Manager {
 		}
 
 		if ( ! empty( $_POST['eam_access_manager'] ) && wp_verify_nonce( $_POST['eam_access_manager'], 'eam_access_manager_action' ) ) {
+
 			if ( ! empty( $_POST['eam_enable_custom_access'] ) ) {
-				update_post_meta( $post_id, 'eam_enable_custom_access', (int) $_POST['eam_enable_custom_access'] );
+				update_post_meta( $post_id, 'eam_enable_custom_access', sanitize_text_field( $_POST['eam_enable_custom_access'] ) );
+
+				if ( 'roles' == $_POST['eam_enable_custom_access'] ) {
+					if ( ! empty( $_POST['eam_allowed_roles'] ) ) {
+
+						foreach( $_POST['eam_allowed_roles'] as $role ) {
+							$allowed_roles[] = sanitize_text_field( $role );
+						}
+
+						update_post_meta( $post_id, 'eam_allowed_roles', $allowed_roles );
+
+					} else {
+						update_post_meta( $post_id, 'eam_allowed_roles', array() );
+					}
+				} elseif ( 'users' == $_POST['eam_enable_custom_access'] ) {
+					if ( ! empty( $_POST['eam_allowed_users'] ) ) {
+						update_post_meta( $post_id, 'eam_allowed_users', array_map( 'absint', $_POST['eam_allowed_users'] ) );
+
+					} else {
+						update_post_meta( $post_id, 'eam_allowed_users', array() );
+					}
+				}
 			} else {
 				delete_post_meta( $post_id, 'eam_enable_custom_access' );
-			}
-
-			if ( ! empty( $_POST['eam_allowed_roles'] ) ) {
-
-				foreach( $_POST['eam_allowed_roles'] as $role ) {
-					$allowed_roles[] = sanitize_text_field( $role );
-				}
-
-				update_post_meta( $post_id, 'eam_allowed_roles', $allowed_roles );
-
-			} else {
-				delete_post_meta( $post_id, 'eam_allowed_roles' );
-			}
-
-			if ( ! empty( $_POST['eam_allowed_users'] ) ) {
-				update_post_meta( $post_id, 'eam_allowed_users', array_map( 'absint', $_POST['eam_allowed_users'] ) );
-
-			} else {
-				delete_post_meta( $post_id, 'eam_allowed_users' );
 			}
 
 		}
@@ -142,44 +161,77 @@ class Editorial_Access_Manager {
 	 */
 	public function meta_box_access_manager( $post ) {
 		$post_type_object = get_post_type_object( get_post_type( $post->ID ) );
-		$edit_post_cap = $post_type_object->cap->edit_post;
+
+		// By default every user and every role with the edit_others_posts cap can edit this post
+		$edit_others_posts_cap = $post_type_object->cap->edit_others_posts;
+
 		$roles = get_editable_roles();
 
 		$users = get_users();
 
-		$allowed_roles = (array) get_post_meta( $post->ID, 'eam_allowed_roles', true );
-		$allowed_users = (array) get_post_meta( $post->ID, 'eam_allowed_users', true );
+		$allowed_roles = get_post_meta( $post->ID, 'eam_allowed_roles', true );
+		if ( $allowed_roles === '' ) {
+			// get default allowed roles since we have never saved allowed roles for this post
+
+			foreach ( $roles as $role_name => $role_array ) {
+				$role = get_role( $role_name );
+
+				if ( $role->has_cap( $edit_others_posts_cap ) ) {
+					$allowed_roles[] = $role_name;
+				}
+			}
+		}
+		$allowed_roles = (array) $allowed_roles;
+
+		$allowed_users = get_post_meta( $post->ID, 'eam_allowed_users', true );
+		if ( $allowed_users === '' ) {
+			// get default allowed users since we have never saved allowed users for this post
+
+			foreach ( $users as $user_object ) {
+
+				if ( user_can( $user_object->ID, $edit_others_posts_cap ) ) {
+					$allowed_users = $user_object->ID;
+				}
+			}
+
+		}
+		$allowed_users = (array) $allowed_users;
 		?>
 
 		<?php wp_nonce_field( 'eam_access_manager_action', 'eam_access_manager' ); ?>
 
 		<div>
-			<input <?php checked( 1, get_post_meta( $post->ID, 'eam_enable_custom_access', true ) ); ?> type="checkbox" name="eam_enable_custom_access" id="eam_enable_custom_access" value="1">
-		 	<?php esc_html_e( 'Enable custom access management', 'editorial-access-manager' ); ?>
+		 	<?php esc_html_e( 'Enable custom access management by', 'editorial-access-manager' ); ?>
+			<select name="eam_enable_custom_access" id="eam_enable_custom_access">
+				<option value="0"><?php esc_html_e( 'Off' ); ?></option>
+				<option <?php selected( 'roles', get_post_meta( $post->ID, 'eam_enable_custom_access', true ) ); ?> value="roles"><?php esc_html_e( 'Roles', 'editorial-access-manager' ); ?></option>
+				<option <?php selected( 'users', get_post_meta( $post->ID, 'eam_enable_custom_access', true ) ); ?> value="users"><?php esc_html_e( 'Users', 'editorial-access-manager' ); ?></option>
+			</select>
 		</div>
-		<div id="eam_custom_access_controls">
 
-
+		<div id="eam_control_roles">
 			<label for="eam_allowed_roles"><?php esc_html_e( 'Manage access for roles:', 'editorial-access-manager' ); ?></label>
 			<select multiple name="eam_allowed_roles[]" id="eam_allowed_roles">
 				<?php foreach ( $roles as $role_name => $role_array ) : ?>
 					<option
 						value="<?php echo esc_attr( $role_name ); ?>"
 						<?php if ( 'administrator' == $role_name ) : ?>selected disabled
-						<?php elseif ( /*$role->has_cap( $edit_post_cap ) ||*/ in_array( $role_name, $allowed_roles ) ) : ?>selected<?php endif;?>
+						<?php elseif ( in_array( $role_name, $allowed_roles ) ) : ?>selected<?php endif;?>
 						>
 						<?php echo esc_attr( ucwords( $role_name ) ); ?>
 					</option>
 				<?php endforeach; ?>
 			</select>
+		</div>
 
+		<div id="eam_control_users">
 			<label for="eam_allowed_users"><?php esc_html_e( 'Manage access for users:', 'editorial-access-manager' ); ?></label>
 			<select multiple name="eam_allowed_users[]" id="eam_allowed_users">
 				<?php foreach ( $users as $user_object ) : $user = new WP_User( $user_object->ID ); ?>
 					<option
 						value="<?php echo absint( $user_object->ID ); ?>"
 						<?php if ( in_array( 'administrator', $user->roles ) ) : ?>selected disabled
-						<?php elseif ( /*user_can( $user_object->ID, $edit_post_cap )*/ in_array( $user_object->ID, $allowed_users ) ) : ?>selected<?php endif;?>
+						<?php elseif ( in_array( $user_object->ID, $allowed_users ) ) : ?>selected<?php endif;?>
 						>
 						<?php echo esc_attr( $user->user_login ); ?>
 					</option>
