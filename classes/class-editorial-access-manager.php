@@ -18,7 +18,7 @@ class Editorial_Access_Manager {
 		add_action( 'add_meta_boxes', array( $this, 'action_add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'action_save_post' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
-		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 10, 4 );
+		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 100, 4 );
 	}
 
 	/**
@@ -32,9 +32,22 @@ class Editorial_Access_Manager {
 	 * @return array
 	 */
 	public function filter_map_meta_cap( $caps, $cap, $user_id, $args ) {
-		if ( 'edit_post' == $cap ) {
+		if ( 'edit_post' == $cap || 'publish_posts' == $cap || 'edit_others_posts' == $cap ) {
 
-			$enable_custom_access = get_post_meta( (int) $args[0], 'eam_enable_custom_access', true );
+			$post_id = ( isset( $args[0] ) ) ? (int) $args[0] : null;
+			if ( ! $post_id && ! empty( $_GET['post'] ) ) {
+				$post_id = (int) $_GET['post'];
+			}
+
+			if ( ! $post_id && ! empty( $_POST['post_ID'] ) ) {
+				$post_id = (int) $_POST['post_ID'];
+			}
+
+			if ( ! $post_id ) {
+				return $caps;
+			}
+
+			$enable_custom_access = get_post_meta( $post_id, 'eam_enable_custom_access', true );
 
 			if ( ! empty( $enable_custom_access ) ) {
 				$user = new WP_User( $user_id );
@@ -45,18 +58,22 @@ class Editorial_Access_Manager {
 					if ( 'roles' == $enable_custom_access ) {
 						// Limit access to whitelisted roles
 
-						$allowed_roles = (array) get_post_meta( (int) $args[0], 'eam_allowed_roles', true );
+						$allowed_roles = (array) get_post_meta( $post_id, 'eam_allowed_roles', true );
 
 						if ( count( array_diff( $user->roles, $allowed_roles ) ) >= 1 ) {
 							$caps[] = 'do_not_allow';
+						} else {
+							$caps = array();
 						}
 					} elseif ( 'users' == $enable_custom_access ) {
 						// Limit access to whitelisted users
 
-						$allowed_users = (array) get_post_meta( (int) $args[0], 'eam_allowed_users', true );
+						$allowed_users = (array) get_post_meta( $post_id, 'eam_allowed_users', true );
 
 						if ( ! in_array( $user_id, $allowed_users ) ) {
 							$caps[] = 'do_not_allow';
+						} else {
+							$caps = array();
 						}
 					}
 				}
@@ -167,7 +184,23 @@ class Editorial_Access_Manager {
 
 		$roles = get_editable_roles();
 
+		// We only want to allow roles to be whitelisted that already have edit_posts
+		foreach ( $roles as $role_name => $role_array ) {
+			$role = get_role( $role_name );
+
+			if ( ! $role->has_cap( $post_type_object->cap->edit_posts ) ) {
+				unset( $roles[$role_name] );
+			}
+		}
+
 		$users = get_users();
+
+		// We only want to allow users to be whitelisted that already have edit_posts
+		foreach ( $users as $key => $user_object) {
+			if ( ! user_can( $user_object->ID, $post_type_object->cap->edit_posts ) ) {
+				unset( $users[$key] );
+			}
+		}
 
 		$allowed_roles = get_post_meta( $post->ID, 'eam_allowed_roles', true );
 		if ( $allowed_roles === '' ) {
