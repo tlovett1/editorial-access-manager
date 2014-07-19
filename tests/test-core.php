@@ -157,4 +157,106 @@ class EAMTestCore extends WP_UnitTestCase {
 		$this->assertTrue( ! ( current_user_can( 'edit_post', $post_id ) && current_user_can( 'publish_posts' ) && current_user_can( 'edit_others_posts' ) ) );
 	}
 
+	/**
+	 * Test an edit by a whitelisted author user where access is user restricted
+	 */
+	public function testEditByWhitelistedAuthorUser() {
+
+		$post_id = $this->factory->post->create();
+
+		$user = $this->_createAndSignInUser( 'author' );
+
+		$this->_configureAccess( $post_id, 'users', array(), array( $user->ID ) );
+
+		$_POST['post_ID'] = $post_id;
+		$_GET['post'] = $post_id;
+
+		$this->assertTrue( current_user_can( 'edit_post', $post_id ) && current_user_can( 'publish_posts' ) && current_user_can( 'edit_others_posts' ) );
+	}
+
+	/**
+	 * Test an edit by a non whitelisted author user where access is user restricted
+	 */
+	public function testEditByNonWhitelistedAuthorUser() {
+
+		$post_id = $this->factory->post->create();
+
+		$user = $this->_createAndSignInUser( 'author' );
+
+		$this->_configureAccess( $post_id, 'users', array(), array( (int) $user->ID + 1 ) );
+
+		$_POST['post_ID'] = $post_id;
+		$_GET['post'] = $post_id;
+
+		$this->assertTrue( ! ( current_user_can( 'edit_post', $post_id ) && current_user_can( 'publish_posts' ) && current_user_can( 'edit_others_posts' ) ) );
+	}
+
+	/**
+	 * Test an edit by a whitelisted editor user where access is user restricted
+	 */
+	public function testEditByWhitelistedEditorUser() {
+
+		$post_id = $this->factory->post->create();
+
+		$user = $this->_createAndSignInUser( 'editor' );
+
+		$this->_configureAccess( $post_id, 'users', array(), array( $user->ID, (int) $user->ID + 1 ) );
+
+		$_POST['post_ID'] = $post_id;
+		$_GET['post'] = $post_id;
+
+		$this->assertTrue( current_user_can( 'edit_post', $post_id ) && current_user_can( 'publish_posts' ) && current_user_can( 'edit_others_posts' ) );
+	}
+
+	/**
+	 * Test an edit by a non whitelisted editor user where access is user restricted
+	 */
+	public function testEditByNonWhitelistedEditorUser() {
+
+		$post_id = $this->factory->post->create();
+
+		$user = $this->_createAndSignInUser( 'editor' );
+
+		$this->_configureAccess( $post_id, 'users', array(), array( (int) $user->ID + 1, (int) $user->ID + 2 ) );
+
+		$_POST['post_ID'] = $post_id;
+		$_GET['post'] = $post_id;
+
+		$this->assertTrue( ! ( current_user_can( 'edit_post', $post_id ) && current_user_can( 'publish_posts' ) && current_user_can( 'edit_others_posts' ) ) );
+	}
+
+	/**
+	 * Test an edit by a whitelisted contributor user where access is user restricted
+	 */
+	public function testEditByWhitelistedContributorUser() {
+
+		$post_id = $this->factory->post->create();
+
+		$user = $this->_createAndSignInUser( 'contributor' );
+
+		$this->_configureAccess( $post_id, 'users', array(), array( $user->ID, (int) $user->ID + 1, (int) $user->ID + 2 ) );
+
+		$_POST['post_ID'] = $post_id;
+		$_GET['post'] = $post_id;
+
+		$this->assertTrue( current_user_can( 'edit_post', $post_id ) && current_user_can( 'publish_posts' ) && current_user_can( 'edit_others_posts' ) );
+	}
+
+	/**
+	 * Test an edit by a non whitelisted contributor user where access is user restricted
+	 */
+	public function testEditByNonWhitelistedContributorUser() {
+
+		$post_id = $this->factory->post->create();
+
+		$user = $this->_createAndSignInUser( 'contributor' );
+
+		$this->_configureAccess( $post_id, 'users', array(), array( (int) $user->ID + 1, (int) $user->ID + 2 ) );
+
+		$_POST['post_ID'] = $post_id;
+		$_GET['post'] = $post_id;
+
+		$this->assertTrue( ! ( current_user_can( 'edit_post', $post_id ) && current_user_can( 'publish_posts' ) && current_user_can( 'edit_others_posts' ) ) );
+	}
+
 }
