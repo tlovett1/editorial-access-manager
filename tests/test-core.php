@@ -259,4 +259,71 @@ class EAMTestCore extends WP_UnitTestCase {
 		$this->assertTrue( ! ( current_user_can( 'edit_post', $post_id ) && current_user_can( 'publish_posts' ) && current_user_can( 'edit_others_posts' ) ) );
 	}
 
+	/**
+	 * Test an edit by a whitelisted editor where access is role restricted
+	 */
+	public function testPageEditByWhitelistedEditorRole() {
+
+		$page_id = $this->factory->post->create( array( 'post_type' => 'page' ) );
+
+		$user = $this->_createAndSignInUser( 'editor' );
+
+		$this->_configureAccess( $page_id, 'roles', array( 'editor' ) );
+
+		$_POST['post_ID'] = $page_id;
+		$_GET['post'] = $page_id;
+
+		$this->assertTrue( current_user_can( 'edit_page', $page_id ) && current_user_can( 'publish_pages' ) && current_user_can( 'edit_others_pages' ) );
+	}
+
+	/**
+	 * Test an edit by a non whitelisted editor where access is role restricted
+	 */
+	public function testPageEditByNonWhitelistedEditorRole() {
+
+		$page_id = $this->factory->post->create( array( 'post_type' => 'page' ) );
+
+		$user = $this->_createAndSignInUser( 'editor' );
+
+		$this->_configureAccess( $page_id, 'roles', array() );
+
+		$_POST['post_ID'] = $page_id;
+		$_GET['post'] = $page_id;
+
+		$this->assertTrue( ! ( current_user_can( 'edit_page', $page_id ) && current_user_can( 'publish_posts' ) && current_user_can( 'edit_others_posts' ) ) );
+	}
+
+	/**
+	 * Test an edit by a whitelisted editor where access is user restricted
+	 */
+	public function testPageEditByWhitelistedEditorUser() {
+
+		$page_id = $this->factory->post->create( array( 'post_type' => 'page' ) );
+
+		$user = $this->_createAndSignInUser( 'editor' );
+
+		$this->_configureAccess( $page_id, 'users', array(), array( $user->ID, (int) $user->ID + 1 ) );
+
+		$_POST['post_ID'] = $page_id;
+		$_GET['post'] = $page_id;
+
+		$this->assertTrue( current_user_can( 'edit_page', $page_id ) && current_user_can( 'publish_pages' ) && current_user_can( 'edit_others_pages' ) );
+	}
+
+	/**
+	 * Test an edit by a non whitelisted editor where access is user restricted
+	 */
+	public function testPageEditByNonWhitelistedEditorUser() {
+
+		$page_id = $this->factory->post->create( array( 'post_type' => 'page' ) );
+
+		$user = $this->_createAndSignInUser( 'editor' );
+
+		$this->_configureAccess( $page_id, 'users' );
+
+		$_POST['post_ID'] = $page_id;
+		$_GET['post'] = $page_id;
+
+		$this->assertTrue( ! ( current_user_can( 'edit_page', $page_id ) && current_user_can( 'publish_posts' ) && current_user_can( 'edit_others_posts' ) ) );
+	}
 }
