@@ -9,6 +9,7 @@ class EAMTestCore extends WP_UnitTestCase {
 	 * @param int $type
 	 * @param array $allowed_roles
 	 * @param array $allowed_users
+	 * @since 0.1.0
 	 */
 	public function _configureAccess( $post_id, $type = 0, $allowed_roles = array(), $allowed_users = array() ) {
 		update_post_meta( $post_id, 'eam_enable_custom_access', sanitize_text_field( $type ) );
@@ -21,6 +22,7 @@ class EAMTestCore extends WP_UnitTestCase {
 	 *
 	 * @param string $role
 	 * @param string $username
+	 * @since 0.1.0
 	 * @return WP_Error|WP_User
 	 */
 	public function _createAndSignInUser( $role, $username = 'testuser' ) {
@@ -40,6 +42,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test edit a post whitelisted for contributors by a contributor
+	 *
+	 * @since 0.1.0
 	 */
 	public function testEditByWhitelistedContributorPost() {
 
@@ -57,6 +61,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test edit a post not whitelisted for contributors by a contributor
+	 *
+	 * @since 0.1.0
 	 */
 	public function testEditByNonWhitelistedContributorPost() {
 
@@ -74,6 +80,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test edit a post whitelisted for editors by an editor
+	 *
+	 * @since 0.1.0
 	 */
 	public function testEditByWhitelistedEditorPost() {
 
@@ -91,6 +99,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test edit a post not whitelisted for editors by an editor
+	 *
+	 * @since 0.1.0
 	 */
 	public function testEditByNonWhitelistedEditorPost() {
 
@@ -108,6 +118,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test edit a post whitelisted for editor by admin
+	 *
+	 * @since 0.1.0
 	 */
 	public function testEditByNonWhitelistedAdminPost() {
 
@@ -125,6 +137,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test edit a post whitelisted for authors by an author
+	 *
+	 * @since 0.1.0
 	 */
 	public function testEditByWhitelistedAuthorPost() {
 
@@ -142,6 +156,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test edit a post not whitelisted for authors by an author
+	 *
+	 * @since 0.1.0
 	 */
 	public function testEditByNonWhitelistedAuthorPost() {
 
@@ -159,6 +175,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test an edit by a whitelisted author user where access is user restricted
+	 *
+	 * @since 0.1.0
 	 */
 	public function testEditByWhitelistedAuthorUser() {
 
@@ -176,6 +194,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test an edit by a non whitelisted author user where access is user restricted
+	 *
+	 * @since 0.1.0
 	 */
 	public function testEditByNonWhitelistedAuthorUser() {
 
@@ -193,6 +213,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test an edit by a whitelisted editor user where access is user restricted
+	 *
+	 * @since 0.1.0
 	 */
 	public function testEditByWhitelistedEditorUser() {
 
@@ -210,6 +232,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test an edit by a non whitelisted editor user where access is user restricted
+	 *
+	 * @since 0.1.0
 	 */
 	public function testEditByNonWhitelistedEditorUser() {
 
@@ -227,6 +251,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test an edit by a whitelisted contributor user where access is user restricted
+	 *
+	 * @since 0.1.0
 	 */
 	public function testEditByWhitelistedContributorUser() {
 
@@ -244,6 +270,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test an edit by a non whitelisted contributor user where access is user restricted
+	 *
+	 * @since 0.1.0
 	 */
 	public function testEditByNonWhitelistedContributorUser() {
 
@@ -261,6 +289,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test an edit by a whitelisted editor where access is role restricted
+	 *
+	 * @since 0.1.0
 	 */
 	public function testPageEditByWhitelistedEditorRole() {
 
@@ -278,6 +308,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test an edit by a non whitelisted editor where access is role restricted
+	 *
+	 * @since 0.1.0
 	 */
 	public function testPageEditByNonWhitelistedEditorRole() {
 
@@ -295,6 +327,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test an edit by a whitelisted editor where access is user restricted
+	 *
+	 * @since 0.1.0
 	 */
 	public function testPageEditByWhitelistedEditorUser() {
 
@@ -312,6 +346,8 @@ class EAMTestCore extends WP_UnitTestCase {
 
 	/**
 	 * Test an edit by a non whitelisted editor where access is user restricted
+	 *
+	 * @since 0.1.0
 	 */
 	public function testPageEditByNonWhitelistedEditorUser() {
 
