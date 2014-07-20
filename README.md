@@ -5,7 +5,7 @@ Allow for granular editorial access control for all post types in WordPress
 
 ## Purpose
 
-A simple plugin to let you control access to who has access to what posts. By default in WordPress, we can create users
+A simple plugin to let you control who has access to what posts. By default in WordPress, we can create users
 and assign them to roles. Roles are automatically assigned certain capabilities. See the codex article for a list of
 [Roles and Capabilities](http://codex.wordpress.org/Roles_and_Capabilities). Sometimes default roles are not enough,
 and we have one-off situations. Editorial Access Manager lets you set which users or roles have access to specific
@@ -15,7 +15,7 @@ plugin can help you.
 ## Installation
 
 Install the plugin in WordPress, you can download a
-[zip via Github](https://github.com/tlovett1/editorial-access-control/archive/master.zip) and upload it using the WP
+[zip via Github](https://github.com/tlovett1/editorial-access-manager/archive/master.zip) and upload it using the WP
 plugin uploader.
 
 ## Configuration
@@ -38,11 +38,11 @@ cannot be used.
 ## Development
 
 #### Setup
-Follow the configuration instructions above to setup the plugin. We recommend developing the plugin locally in an
+Follow the configuration instructions above to setup the plugin. I recommend developing the plugin locally in an
 environment such as [Varying Vagrant Vagrants](https://github.com/Varying-Vagrant-Vagrants/VVV).
 
-If you want to touch JavaScript or CSS, you will need to fire up [Grunt](http://gruntjs.com). Assuming you have NPM
-installed, you can setup and run Grunt like so:
+If you want to touch JavaScript or CSS, you will need to fire up [Grunt](http://gruntjs.com). Assuming you have
+[npm](https://www.npmjs.org/) installed, you can setup and run Grunt like so:
 
 First install Grunt:
 ```
@@ -87,4 +87,5 @@ phpunit
 ```
 
 #### Issues
-If you identify any errors or have an idea for improving the plugin, please [open an issue](https://github.com/tlovett1/editorial-access-manager/issues?state=open). We're excited to see what the community thinks of this project, and we would love your input!
+If you identify any errors or have an idea for improving the plugin, please
+[open an issue](https://github.com/tlovett1/editorial-access-manager/issues?state=open).
