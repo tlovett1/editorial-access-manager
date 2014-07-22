@@ -19,18 +19,20 @@ and we have one-off situations. Editorial Access Manager lets you set which user
 posts. Perhaps you have a user who is a Contributor, but you want them to have access to edit one specific page? This
 plugin can help you.
 
-== Configuration ==
+= Configuration =
 
 There are no overarching settings for this plugin. Simply go to the edit post screen in the WordPress admin and
 configure access settings in the "Editorial Access Manager" meta box in the sidebar.
 
-= Managing Access by Roles =
+Managing Access by Roles:
+
 In the "Editorial Access Manager" meta box, enable custom access management by "Roles". Once enabled, the post can only be
 edited by users that fall into those roles. However, no matter what, the Administrator role can always edit any post.
 This if for safety reasons. You can also only use roles that have the "edit_posts" capability; therefore "Subscriber" by
 default cannot be used.
 
-= Managing Access by Users =
+Managing Access by Users:
+
 In the "Editorial Access Manager" meta box, enable custom access management by "Users". Once enabled, the post can only be
 edited by designated users. However, no matter what, any administrator can edit any post. This if for safety reasons.
 You can also only use users that have the "edit_others_posts" capability; therefore "Subscriber" users by default
