@@ -4,7 +4,7 @@ Donate link: http://www.taylorlovett.com
 Tags: editorial access management, user roles, user capabilities, role management, user permissions, administrator permissions
 Requires at least: 3.6
 Tested up to: 3.9
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,19 +19,19 @@ and we have one-off situations. Editorial Access Manager lets you set which user
 posts. Perhaps you have a user who is a Contributor, but you want them to have access to edit one specific page? This
 plugin can help you.
 
-= Configuration =
+= Configuration Overview =
 
 There are no overarching settings for this plugin. Simply go to the edit post screen in the WordPress admin and
 configure access settings in the "Editorial Access Manager" meta box in the sidebar.
 
-Managing Access by Roles:
+= Managing Access by Roles =
 
 In the "Editorial Access Manager" meta box, enable custom access management by "Roles". Once enabled, the post can only be
 edited by users that fall into those roles. However, no matter what, the Administrator role can always edit any post.
 This if for safety reasons. You can also only use roles that have the "edit_posts" capability; therefore "Subscriber" by
 default cannot be used.
 
-Managing Access by Users:
+= Managing Access by Users =
 
 In the "Editorial Access Manager" meta box, enable custom access management by "Users". Once enabled, the post can only be
 edited by designated users. However, no matter what, any administrator can edit any post. This if for safety reasons.
@@ -45,6 +45,9 @@ cannot be used.
 the sidebar.
 
 == Changelog ==
+
+= 0.1.1 =
+* Properly revoke access, if necessary, for users that have edit_page but not edit_post.
 
 = 0.1.0 =
 * Plugin release
