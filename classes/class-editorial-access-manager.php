@@ -32,7 +32,7 @@ class Editorial_Access_Manager {
 	 * @return array
 	 */
 	public function filter_map_meta_cap( $caps, $cap, $user_id, $args ) {
-		if ( 'edit_post' == $cap || 'publish_posts' == $cap || 'edit_others_posts' == $cap ) {
+		if ( 'edit_post' == $cap || 'publish_posts' == $cap || 'edit_others_posts' == $cap || 'edit_page' == $cap || 'publish_pages' == $cap || 'edit_others_pages' == $cap ) {
 
 			$post_id = ( isset( $args[0] ) ) ? (int) $args[0] : null;
 			if ( ! $post_id && ! empty( $_GET['post'] ) ) {
