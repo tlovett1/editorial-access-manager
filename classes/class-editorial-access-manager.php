@@ -15,10 +15,21 @@ class Editorial_Access_Manager {
 	 * @since 0.1.0
 	 */
 	public function setup() {
+		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 		add_action( 'add_meta_boxes', array( $this, 'action_add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'action_save_post' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
 		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 100, 4 );
+	}
+
+	/**
+	 * Load translation
+	 *
+	 * @return void
+	 * @since 0.1.2
+	 */
+	public function load_textdomain() {
+		load_plugin_textdomain( 'editorial-access-manager', false, dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/' );
 	}
 
 	/**
@@ -236,7 +247,7 @@ class Editorial_Access_Manager {
 		<div>
 		 	<?php esc_html_e( 'Enable custom access management by', 'editorial-access-manager' ); ?>
 			<select name="eam_enable_custom_access" id="eam_enable_custom_access">
-				<option value="0"><?php esc_html_e( 'Off' ); ?></option>
+				<option value="0"><?php esc_html_e( 'Off', 'editorial-access-manager' ); ?></option>
 				<option <?php selected( 'roles', get_post_meta( $post->ID, 'eam_enable_custom_access', true ) ); ?> value="roles"><?php esc_html_e( 'Roles', 'editorial-access-manager' ); ?></option>
 				<option <?php selected( 'users', get_post_meta( $post->ID, 'eam_enable_custom_access', true ) ); ?> value="users"><?php esc_html_e( 'Users', 'editorial-access-manager' ); ?></option>
 			</select>
