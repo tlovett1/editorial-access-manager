@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Editorial Access Manager 0.1.1\n"
 "Report-Msgid-Bugs-To: "
 "https://github.com/tlovett1/editorial-access-manager/issues\n"
-"POT-Creation-Date: 2014-10-03 23:09:27+00:00\n"
+"POT-Creation-Date: 2014-10-04 18:58:03+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -29,29 +29,27 @@ msgstr ""
 msgid "Editorial Access Manager"
 msgstr ""
 
-#: classes/class-editorial-access-manager.php:253
+#: classes/class-editorial-access-manager.php:248
 msgid "Enable custom access management by"
 msgstr ""
 
-#: classes/class-editorial-access-manager.php:255
+#: classes/class-editorial-access-manager.php:250
 msgid "Off"
 msgstr ""
 
-#: classes/class-editorial-access-manager.php:256
-#: classes/class-editorial-access-manager.php:323
+#: classes/class-editorial-access-manager.php:251
 msgid "Roles"
 msgstr ""
 
-#: classes/class-editorial-access-manager.php:257
-#: classes/class-editorial-access-manager.php:337
+#: classes/class-editorial-access-manager.php:252
 msgid "Users"
 msgstr ""
 
-#: classes/class-editorial-access-manager.php:262
+#: classes/class-editorial-access-manager.php:257
 msgid "Manage access for roles:"
 msgstr ""
 
-#: classes/class-editorial-access-manager.php:277
+#: classes/class-editorial-access-manager.php:272
 msgid "Manage access for users:"
 msgstr ""
 

@@ -1,9 +1,9 @@
 {
   "name": "editorial-access-manager-wp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/tlovett1/editorial-access-manager.git"
+    "url": "https://github.com/tlovett1/editorial-access-manager.git"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
