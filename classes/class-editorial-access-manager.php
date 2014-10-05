@@ -20,6 +20,7 @@ class Editorial_Access_Manager {
 		add_action( 'save_post', array( $this, 'action_save_post' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
 		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 100, 4 );
+		add_filter( 'manage_edit-post_columns', array( $this, 'manage_columns' ) ); // needed for plugins using get_column_headers()
 		add_filter( 'manage_pages_columns', array( $this, 'manage_columns' ) );
 		add_action( 'manage_pages_custom_column', array( $this, 'manage_custom_column' ), 10, 2 );
 		add_filter( 'manage_posts_columns', array( $this, 'manage_columns' ) );
@@ -116,26 +117,49 @@ class Editorial_Access_Manager {
 	 */
 	public function action_admin_enqueue_scripts( $hook ) {
 
+		/**
+		 * Setup CSS stuff
+		 */
 		if ( 'post.php' == $hook || 'post-new.php' == $hook || 'edit.php' == $hook ) {
-			/**
-			 * Setup JS stuff
-			 */
-			if ( true /*defined( SCRIPT_DEBUG ) && SCRIPT_DEBUG*/ ) {
-				$js_path = '/js/post-admin.js';
+			if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 				$css_path = '/build/css/post-admin.css';
 			} else {
-				$js_path = '/build/js/post-admin.min.js';
 				$css_path = '/build/css/post-admin.min.css';
 			}
-
-			wp_register_script( 'jquery-chosen', plugins_url( '/bower_components/chosen_v1.1.0/chosen.jquery.js', dirname( __FILE__ ) ), array( 'jquery' ), '1.0', true );
-			wp_enqueue_script( 'eam-post-admin', plugins_url( $js_path, dirname( __FILE__ ) ), array( 'jquery-chosen' ), '1.0', true );
-
-			/**
-			 * Setup CSS stuff
-			 */
 			wp_enqueue_style( 'jquery-chosen', plugins_url( '/bower_components/chosen_v1.1.0/chosen.min.css', dirname( __FILE__ ) ) );
 			wp_enqueue_style( 'eam-post-admin', plugins_url( $css_path, dirname( __FILE__ ) ) );
+		}
+
+		/**
+		 * Setup JS stuff
+		 */
+		if ( 'post.php' == $hook || 'post-new.php' == $hook ) {
+			if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+				$js_path = '/js/post-admin.js';
+			} else {
+				$js_path = '/build/js/post-admin.min.js';
+			}
+			wp_register_script( 'jquery-chosen', plugins_url( '/bower_components/chosen_v1.1.0/chosen.jquery.js', dirname( __FILE__ ) ), array( 'jquery' ), '1.0', true );
+			wp_enqueue_script( 'eam-post-admin', plugins_url( $js_path, dirname( __FILE__ ) ), array( 'jquery-chosen' ), '1.0', true );
+		}
+
+		/**
+		 * Setup JS stuff for integration with CMS Tree Page View plugin
+		 */
+		if ( function_exists( 'cms_tpv_is_one_of_our_pages' ) ) {
+			if ( cms_tpv_is_one_of_our_pages() ) {
+				if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+					$js_path = '/js/cms-tree-page-view.js';
+				} else {
+					$js_path = '/build/js/cms-tree-page-view.min.js';
+				}
+				wp_enqueue_script( 'eam-cms-tree-page-view', plugins_url( $js_path, dirname( __FILE__ ) ), array(), '1.0', true );
+				$localize_data = array(
+					'column_title' => __( 'Editorial access', 'editorial-access-manager' ),
+					'off_text' => __( 'Off', 'editorial-access-manager' )
+				);
+				wp_localize_script( 'eam-cms-tree-page-view', 'eam_cms_tpv', $localize_data );
+			}
 		}
 	}
 
@@ -339,7 +363,7 @@ class Editorial_Access_Manager {
 					sort( $role_names );
 					echo implode( ', ', $role_names );
 				}
-				if ( 'users' == $eam ) {
+				else if ( 'users' == $eam ) {
 					$users = get_post_meta( $post_id, 'eam_allowed_users', true );
 					$admins = get_users( array( 'role' => 'administrator', 'fields' => 'ID' ) );
 					$users = array_merge( $users, $admins );
@@ -354,6 +378,9 @@ class Editorial_Access_Manager {
 					sort( $user_names );
 					echo implode( ', ', $user_names );
 				}
+			}
+			else {
+				_e( 'Off', 'editorial-access-manager' );
 			}
 		}
 	}

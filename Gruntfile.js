@@ -3,9 +3,13 @@ module.exports = function ( grunt ) {
 		pkg : grunt.file.readJSON( 'package.json' ),
 		uglify : {
 			js : {
-				files : {
-					'build/js/post-admin.min.js' : ['js/post-admin.js']
-				}
+				files : [{
+					expand: true,
+					cwd: 'js',
+					src: '**/*.js',
+					dest: 'build/js/',
+					ext: '.min.js'
+				}]
 			}
 		},
 		jshint : {
