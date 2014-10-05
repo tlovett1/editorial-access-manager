@@ -17,6 +17,9 @@ module.exports = function ( grunt ) {
 			dist : {
 				files : {
 					'build/css/post-admin.css' : 'scss/post-admin.scss'
+				},
+				options : {
+					sourcemap: 'none'
 				}
 			}
 		},

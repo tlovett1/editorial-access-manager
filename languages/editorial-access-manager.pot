@@ -53,6 +53,10 @@ msgstr ""
 msgid "Manage access for users:"
 msgstr ""
 
+#: classes/class-editorial-access-manager.php:302
+msgid "Editorial access"
+msgstr ""
+
 #. Author URI of the plugin/theme
 msgid "http://www.taylorlovett.com"
 msgstr ""
