@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Editorial Access Manager v0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-10-03 19:51:57+0000\n"
+"PO-Revision-Date: 2014-10-03 23:12:10+0000\n"
 "Last-Translator: marco-chiesi <marco@blackstudio.it>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,38 +20,45 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Textdomain-Support: yes"
 
-#: classes/class-editorial-access-manager.php:137
+#: classes/class-editorial-access-manager.php:141
 #@ editorial-access-manager
 msgid "Editorial Access Manager"
 msgstr "Gestione accesso editoriale"
 
-#: classes/class-editorial-access-manager.php:248
+#: classes/class-editorial-access-manager.php:253
 #@ editorial-access-manager
 msgid "Enable custom access management by"
 msgstr "Criterio gestione accessi"
 
-#: classes/class-editorial-access-manager.php:250
+#: classes/class-editorial-access-manager.php:255
 #@ editorial-access-manager
 msgid "Off"
-msgstr "Disattivata"
+msgstr "Nessuno"
 
-#: classes/class-editorial-access-manager.php:251
+#: classes/class-editorial-access-manager.php:256
+#: classes/class-editorial-access-manager.php:323
 #@ editorial-access-manager
 msgid "Roles"
 msgstr "Ruoli"
 
-#: classes/class-editorial-access-manager.php:252
+#: classes/class-editorial-access-manager.php:257
+#: classes/class-editorial-access-manager.php:337
 #@ editorial-access-manager
 msgid "Users"
 msgstr "Utenti"
 
-#: classes/class-editorial-access-manager.php:257
+#: classes/class-editorial-access-manager.php:262
 #@ editorial-access-manager
 msgid "Manage access for roles:"
 msgstr "Gestione accesso ruoli:"
 
-#: classes/class-editorial-access-manager.php:272
+#: classes/class-editorial-access-manager.php:277
 #@ editorial-access-manager
 msgid "Manage access for users:"
 msgstr "Gestione accesso utenti:"
+
+#: classes/class-editorial-access-manager.php:302
+#@ editorial-access-manager
+msgid "Editorial access"
+msgstr "Accesso editoriale"
 

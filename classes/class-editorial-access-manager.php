@@ -20,6 +20,11 @@ class Editorial_Access_Manager {
 		add_action( 'save_post', array( $this, 'action_save_post' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
 		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 100, 4 );
+		add_filter( 'manage_edit-post_columns', array( $this, 'manage_columns' ) ); // needed for plugins using get_column_headers()
+		add_filter( 'manage_pages_columns', array( $this, 'manage_columns' ) );
+		add_action( 'manage_pages_custom_column', array( $this, 'manage_custom_column' ), 10, 2 );
+		add_filter( 'manage_posts_columns', array( $this, 'manage_columns' ) );
+		add_action( 'manage_posts_custom_column', array( $this, 'manage_custom_column' ), 10, 2 );
 	}
 
 	/**
@@ -43,7 +48,17 @@ class Editorial_Access_Manager {
 	 * @return array
 	 */
 	public function filter_map_meta_cap( $caps, $cap, $user_id, $args ) {
-		if ( 'edit_post' == $cap || 'publish_posts' == $cap || 'edit_others_posts' == $cap || 'edit_page' == $cap || 'publish_pages' == $cap || 'edit_others_pages' == $cap ) {
+		$eam_caps = array(
+			'edit_page',
+			'edit_post',
+			'edit_others_pages',
+			'edit_others_posts',
+			'publish_posts',
+			'publish_pages',
+			'delete_page',
+			'delete_post',
+		);
+		if ( in_array( $cap, $eam_caps ) ) {
 
 			$post_id = ( isset( $args[0] ) ) ? (int) $args[0] : null;
 			if ( ! $post_id && ! empty( $_GET['post'] ) ) {
@@ -102,26 +117,49 @@ class Editorial_Access_Manager {
 	 */
 	public function action_admin_enqueue_scripts( $hook ) {
 
-		if ( 'post.php' == $hook || 'post-new.php' == $hook ) {
-			/**
-			 * Setup JS stuff
-			 */
-			if ( true /*defined( SCRIPT_DEBUG ) && SCRIPT_DEBUG*/ ) {
-				$js_path = '/js/post-admin.js';
+		/**
+		 * Setup CSS stuff
+		 */
+		if ( 'post.php' == $hook || 'post-new.php' == $hook || 'edit.php' == $hook ) {
+			if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 				$css_path = '/build/css/post-admin.css';
 			} else {
-				$js_path = '/build/js/post-admin.min.js';
 				$css_path = '/build/css/post-admin.min.css';
 			}
-
-			wp_register_script( 'jquery-chosen', plugins_url( '/bower_components/chosen_v1.1.0/chosen.jquery.js', dirname( __FILE__ ) ), array( 'jquery' ), '1.0', true );
-			wp_enqueue_script( 'eam-post-admin', plugins_url( $js_path, dirname( __FILE__ ) ), array( 'jquery-chosen' ), '1.0', true );
-
-			/**
-			 * Setup CSS stuff
-			 */
 			wp_enqueue_style( 'jquery-chosen', plugins_url( '/bower_components/chosen_v1.1.0/chosen.min.css', dirname( __FILE__ ) ) );
 			wp_enqueue_style( 'eam-post-admin', plugins_url( $css_path, dirname( __FILE__ ) ) );
+		}
+
+		/**
+		 * Setup JS stuff
+		 */
+		if ( 'post.php' == $hook || 'post-new.php' == $hook ) {
+			if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+				$js_path = '/js/post-admin.js';
+			} else {
+				$js_path = '/build/js/post-admin.min.js';
+			}
+			wp_register_script( 'jquery-chosen', plugins_url( '/bower_components/chosen_v1.1.0/chosen.jquery.js', dirname( __FILE__ ) ), array( 'jquery' ), '1.0', true );
+			wp_enqueue_script( 'eam-post-admin', plugins_url( $js_path, dirname( __FILE__ ) ), array( 'jquery-chosen' ), '1.0', true );
+		}
+
+		/**
+		 * Setup JS stuff for integration with CMS Tree Page View plugin
+		 */
+		if ( function_exists( 'cms_tpv_is_one_of_our_pages' ) ) {
+			if ( cms_tpv_is_one_of_our_pages() ) {
+				if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+					$js_path = '/js/cms-tree-page-view.js';
+				} else {
+					$js_path = '/build/js/cms-tree-page-view.min.js';
+				}
+				wp_enqueue_script( 'eam-cms-tree-page-view', plugins_url( $js_path, dirname( __FILE__ ) ), array(), '1.0', true );
+				$localize_data = array(
+					'column_title' => __( 'Editorial access', 'editorial-access-manager' ),
+					'off_text' => __( 'Off', 'editorial-access-manager' )
+				);
+				wp_localize_script( 'eam-cms-tree-page-view', 'eam_cms_tpv', $localize_data );
+			}
 		}
 	}
 
@@ -188,6 +226,7 @@ class Editorial_Access_Manager {
 	 * @since 0.1.0
 	 */
 	public function meta_box_access_manager( $post ) {
+		global $wp_roles;
 		$post_type_object = get_post_type_object( get_post_type( $post->ID ) );
 
 		// By default every user and every role with the edit_others_posts cap can edit this post
@@ -262,7 +301,7 @@ class Editorial_Access_Manager {
 						<?php if ( 'administrator' == $role_name ) : ?>selected disabled
 						<?php elseif ( in_array( $role_name, $allowed_roles ) ) : ?>selected<?php endif;?>
 						>
-						<?php echo esc_attr( ucwords( $role_name ) ); ?>
+						<?php echo esc_attr( translate_user_role( $wp_roles->roles[ $role_name ]['name'] ) ); ?>
 					</option>
 				<?php endforeach; ?>
 			</select>
@@ -284,6 +323,66 @@ class Editorial_Access_Manager {
 		</div>
 
 		<?php
+	}
+
+	/**
+	 * Add access manager column
+	 *
+	 * @param array $columns
+	 * @since 0.1.2
+	 */
+	public function manage_columns( $columns ) {
+		if ( current_user_can( 'manage_options' ) ) {
+			$columns['editorial-access-manager'] = __( 'Editorial access', 'editorial-access-manager' );
+		}
+		return $columns;
+	}
+
+	/**
+	 * Populate access manager column cells
+	 *
+	 * @param string $column_name
+	 * @param int $post_id
+	 * @since 0.1.2
+	 */
+	public function manage_custom_column( $column_name, $post_id ) {
+		if ( $column_name == 'editorial-access-manager' ) {
+			$eam = get_post_meta( $post_id, 'eam_enable_custom_access', true );
+			if ( ! empty( $eam ) ) {
+				if ( 'roles' == $eam ) {
+					$roles = get_post_meta( $post_id, 'eam_allowed_roles', true );
+					array_unshift( $roles, 'administrator' );
+					global $wp_roles;
+					$role_names = array();
+					echo '<strong>' . __( 'Roles', 'editorial-access-manager' ) . ':</strong><br />';
+					foreach ( $roles as $role ) {
+						if ( ! empty( $wp_roles->roles[ $role ]['name'] ) ) {
+							$role_names[] = translate_user_role( $wp_roles->roles[ $role ]['name'] );
+						}
+					}
+					sort( $role_names );
+					echo implode( ', ', $role_names );
+				}
+				else if ( 'users' == $eam ) {
+					$users = get_post_meta( $post_id, 'eam_allowed_users', true );
+					$admins = get_users( array( 'role' => 'administrator', 'fields' => 'ID' ) );
+					$users = array_merge( $users, $admins );
+					$user_names = array();
+					echo '<strong>' . __( 'Users', 'editorial-access-manager' ) . ':</strong><br />';
+					foreach ( $users as $user ) {
+						$user_object = get_userdata( $user );
+						if ( ! empty( $user_object ) ) {
+							$user_names[] = $user_object->user_login;
+						}
+					}
+					sort( $user_names );
+					echo implode( ', ', $user_names );
+				}
+			}
+			else {
+				_e( 'Off', 'editorial-access-manager' );
+			}
+		}
 	}
 
 	/**
