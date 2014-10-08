@@ -1,4 +1,4 @@
-Editorial Access Manager
+Editorial Access Manager [![Build Status](https://travis-ci.org/tlovett1/editorial-access-manager.svg?branch=master)](https://travis-ci.org/tlovett1/editorial-access-manager)
 ==============
 
 Allow for granular editorial access control for all post types in WordPress
