@@ -30,7 +30,7 @@ class Editorial_Access_Manager {
 	 * Load translation
 	 *
 	 * @return void
-	 * @since 0.1.2
+	 * @since 0.2.0
 	 */
 	public function load_textdomain() {
 		load_plugin_textdomain( 'editorial-access-manager', false, dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/' );
@@ -57,6 +57,7 @@ class Editorial_Access_Manager {
 			'delete_page',
 			'delete_post',
 		);
+
 		if ( in_array( $cap, $eam_caps ) ) {
 
 			$post_id = ( isset( $args[0] ) ) ? (int) $args[0] : null;
@@ -310,7 +311,8 @@ class Editorial_Access_Manager {
 	 * Add access manager column
 	 *
 	 * @param array $columns
-	 * @since 0.1.2
+	 * @since 0.2.0
+	 * @return array
 	 */
 	public function manage_columns( $columns ) {
 		if ( current_user_can( 'manage_options' ) ) {
@@ -324,7 +326,7 @@ class Editorial_Access_Manager {
 	 *
 	 * @param string $column_name
 	 * @param int $post_id
-	 * @since 0.1.2
+	 * @since 0.2.0
 	 */
 	public function manage_custom_column( $column_name, $post_id ) {
 		if ( $column_name == 'editorial-access-manager' ) {
@@ -343,8 +345,7 @@ class Editorial_Access_Manager {
 					}
 					sort( $role_names );
 					echo implode( ', ', $role_names );
-				}
-				else if ( 'users' == $eam ) {
+				} elseif ( 'users' === $eam ) {
 					$users = get_post_meta( $post_id, 'eam_allowed_users', true );
 					$admins = get_users( array( 'role' => 'administrator', 'fields' => 'ID' ) );
 					$users = array_merge( $users, $admins );
@@ -361,7 +362,7 @@ class Editorial_Access_Manager {
 				}
 			}
 			else {
-				_e( 'Off', 'editorial-access-manager' );
+				esc_html_e( 'Off', 'editorial-access-manager' );
 			}
 		}
 	}
