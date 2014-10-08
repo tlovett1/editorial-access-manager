@@ -38,6 +38,8 @@ edited by designated users. However, no matter what, any administrator can edit 
 You can also only use users that have the "edit_others_posts" capability; therefore "Subscriber" users by default
 cannot be used.
 
+Fork the plugin on [Github](http://github.com/tlovett1/editorial-access-manager)
+
 == Installation ==
 
 1. Upload and activate the plugin.
