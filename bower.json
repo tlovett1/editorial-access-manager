@@ -1,0 +1,20 @@
+{
+  "name": "editorial-access-manager",
+  "version": "0.1.1",
+  "homepage": "https://github.com/tlovett1/editorial-access-manager",
+  "authors": [
+    "Taylor Lovett <tlovett88@gmail.com>"
+  ],
+  "description": "Allow for granular editorial access control for all post types in WordPress.",
+  "license": "MIT",
+  "private": false,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "tests"
+  ],
+  "dependencies": {
+    "chosen_v1.1.0": "https://github.com/harvesthq/chosen/releases/download/v1.1.0/chosen_v1.1.0.zip"
+  }
+}
