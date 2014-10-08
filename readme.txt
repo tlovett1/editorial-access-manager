@@ -3,8 +3,8 @@ Contributors: tlovett1
 Donate link: http://www.taylorlovett.com
 Tags: editorial access management, user roles, user capabilities, role management, user permissions, administrator permissions
 Requires at least: 3.6
-Tested up to: 3.9
-Stable tag: 0.1.1
+Tested up to: 4.0
+Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,15 @@ Fork the plugin on [Github](http://github.com/tlovett1/editorial-access-manager)
 the sidebar.
 
 == Changelog ==
+
+= 0.2.0 =
+* Add Italian language support. Props [@marcochiesi](https://github.com/marcochiesi)
+* Add post table column to show editorial access. Props [@marcochiesi](https://github.com/marcochiesi)
+* Remove source file for minified CSS. Props [@marcochiesi](https://github.com/marcochiesi)
+* Tweak capability handling. Props [@marcochiesi](https://github.com/marcochiesi)
+* Add proper bower.json
+* Cleanup messy JavaScript
+* Remove unit testing of unnecessary WP versions
 
 = 0.1.1 =
 * Properly revoke access, if necessary, for users that have edit_page but not edit_post.

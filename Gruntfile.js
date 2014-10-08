@@ -62,7 +62,7 @@ module.exports = function ( grunt ) {
 					updateTimestamp: true
 				}
 			}
-		},
+		}
 	} );
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
