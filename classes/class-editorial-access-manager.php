@@ -20,7 +20,6 @@ class Editorial_Access_Manager {
 		add_action( 'save_post', array( $this, 'action_save_post' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
 		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 100, 4 );
-		add_filter( 'manage_edit-post_columns', array( $this, 'manage_columns' ) ); // needed for plugins using get_column_headers()
 		add_filter( 'manage_pages_columns', array( $this, 'manage_columns' ) );
 		add_action( 'manage_pages_custom_column', array( $this, 'manage_custom_column' ), 10, 2 );
 		add_filter( 'manage_posts_columns', array( $this, 'manage_columns' ) );
@@ -143,24 +142,6 @@ class Editorial_Access_Manager {
 			wp_enqueue_script( 'eam-post-admin', plugins_url( $js_path, dirname( __FILE__ ) ), array( 'jquery-chosen' ), '1.0', true );
 		}
 
-		/**
-		 * Setup JS stuff for integration with CMS Tree Page View plugin
-		 */
-		if ( function_exists( 'cms_tpv_is_one_of_our_pages' ) ) {
-			if ( cms_tpv_is_one_of_our_pages() ) {
-				if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
-					$js_path = '/js/cms-tree-page-view.js';
-				} else {
-					$js_path = '/build/js/cms-tree-page-view.min.js';
-				}
-				wp_enqueue_script( 'eam-cms-tree-page-view', plugins_url( $js_path, dirname( __FILE__ ) ), array(), '1.0', true );
-				$localize_data = array(
-					'column_title' => __( 'Editorial access', 'editorial-access-manager' ),
-					'off_text' => __( 'Off', 'editorial-access-manager' )
-				);
-				wp_localize_script( 'eam-cms-tree-page-view', 'eam_cms_tpv', $localize_data );
-			}
-		}
 	}
 
 	/**
