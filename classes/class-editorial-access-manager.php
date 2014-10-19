@@ -3,11 +3,40 @@
 class Editorial_Access_Manager {
 
 	/**
-	 * Placeholder constructor
+	 * Constructor
 	 *
 	 * @since 0.1.0
 	 */
-	public function __construct() { }
+	public function __construct() {
+		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
+		add_action( 'admin_init', array( $this, 'setup' ) );
+		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 100, 4 );
+	}
+	
+	/**
+	 * Activation
+	 *
+	 * @since 0.2.1
+	 */
+	public static function activation() {
+		$roles = get_editable_roles();
+		foreach ( $roles as $key => $role ) {
+			$role_object = get_role( $key );
+			$role_object->add_cap( EAM_CAPABILITY, $role_object->has_cap( 'manage_options' ) );
+		}
+	}
+
+	/**
+	 * Deactivation
+	 *
+	 * @since 0.2.1
+	 */
+	public static function deactivation() {
+		$roles = get_editable_roles();
+		foreach ( $roles as $key => $role ) {
+			get_role( $key )->remove_cap( EAM_CAPABILITY );
+		}
+	}
 
 	/**
 	 * Register actions and filters
@@ -15,12 +44,23 @@ class Editorial_Access_Manager {
 	 * @since 0.1.0
 	 */
 	public function setup() {
-		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
+		
+		// If current user has not the capability to manage access do nothing
+		if ( ! current_user_can( EAM_CAPABILITY ) ) {
+			return;
+		}
+		
+		// Register meta boxes and other hooks
 		add_action( 'add_meta_boxes', array( $this, 'action_add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'action_save_post' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
-		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 100, 4 );
-		add_action( 'admin_init', array( $this, 'setup_columns' ), 100 );
+		
+		// Setup admin columns
+		$post_types = $this->get_post_types();
+		foreach( $post_types as $post_type ) {
+			add_filter( "manage_${post_type}_posts_columns", array( $this, 'manage_columns' ) );
+			add_action( "manage_${post_type}_posts_custom_column", array( $this, 'manage_custom_column' ), 10, 2 );
+		}
 	}
 
 	/**
@@ -31,19 +71,6 @@ class Editorial_Access_Manager {
 	 */
 	public function get_post_types() {
 		return apply_filters( 'eam_post_types', get_post_types( array( 'public' => true ) ) );
-	}
-
-	/**
-	 * Setup admin column for managed custom post types
-	 *
-	 * @since 0.2.1
-	 */
-	public function setup_columns() {
-		$post_types = $this->get_post_types();
-		foreach( $post_types as $post_type ) {
-			add_filter( "manage_${post_type}_posts_columns", array( $this, 'manage_columns' ) );
-			add_action( "manage_${post_type}_posts_custom_column", array( $this, 'manage_custom_column' ), 10, 2 );
-		}
 	}
 
 	/**
@@ -334,9 +361,7 @@ class Editorial_Access_Manager {
 	 * @return array
 	 */
 	public function manage_columns( $columns ) {
-		if ( current_user_can( 'manage_options' ) ) {
-			$columns['editorial-access-manager'] = __( 'Editorial access', 'editorial-access-manager' );
-		}
+		$columns['editorial-access-manager'] = __( 'Editorial access', 'editorial-access-manager' );
 		return $columns;
 	}
 
@@ -397,7 +422,6 @@ class Editorial_Access_Manager {
 
 		if ( ! $instance ) {
 			$instance = new self();
-			$instance->setup();
 		}
 
 		return $instance;
