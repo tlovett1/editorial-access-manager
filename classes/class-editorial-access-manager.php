@@ -20,16 +20,35 @@ class Editorial_Access_Manager {
 		add_action( 'save_post', array( $this, 'action_save_post' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
 		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 100, 4 );
-		add_filter( 'manage_pages_columns', array( $this, 'manage_columns' ) );
-		add_action( 'manage_pages_custom_column', array( $this, 'manage_custom_column' ), 10, 2 );
-		add_filter( 'manage_posts_columns', array( $this, 'manage_columns' ) );
-		add_action( 'manage_posts_custom_column', array( $this, 'manage_custom_column' ), 10, 2 );
+		add_action( 'admin_init', array( $this, 'setup_columns' ), 100 );
+	}
+
+	/**
+	 * Return list of post types managed by the plugin
+	 *
+	 * @since 0.2.1
+	 * @return array
+	 */
+	public function get_post_types() {
+		return apply_filters( 'eam_post_types', get_post_types( array( 'public' => true ) ) );
+	}
+
+	/**
+	 * Setup admin column for managed custom post types
+	 *
+	 * @since 0.2.1
+	 */
+	public function setup_columns() {
+		$post_types = $this->get_post_types();
+		foreach( $post_types as $post_type ) {
+			add_filter( "manage_${post_type}_posts_columns", array( $this, 'manage_columns' ) );
+			add_action( "manage_${post_type}_posts_custom_column", array( $this, 'manage_custom_column' ), 10, 2 );
+		}
 	}
 
 	/**
 	 * Load translation
 	 *
-	 * @return void
 	 * @since 0.2.0
 	 */
 	public function load_textdomain() {
@@ -151,7 +170,7 @@ class Editorial_Access_Manager {
 	 * @since 0.1.0
 	 */
 	public function action_add_meta_boxes() {
-		$post_types = get_post_types();
+		$post_types = $this->get_post_types();
 
 		foreach( $post_types as $post_type ) {
 			add_meta_box( 'eam_access_manager', __( 'Editorial Access Manager', 'editorial-access-manager' ), array( $this, 'meta_box_access_manager' ), $post_type, 'side', 'core' );
