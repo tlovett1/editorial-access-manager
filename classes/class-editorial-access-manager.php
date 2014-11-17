@@ -345,8 +345,8 @@ class Editorial_Access_Manager {
 			<select name="eam_enable_custom_access" id="eam_enable_custom_access">
 				<?php if ( $bulk ) { ?><option value="-1"><?php _e( '&mdash; No Change &mdash;' ); ?></option><?php } ?>
 				<option value="0"><?php esc_html_e( 'Off', 'editorial-access-manager' ); ?></option>
-				<option <?php selected( 'roles', $post_id ? get_post_meta( $post->ID, 'eam_enable_custom_access', true ) : '' ); ?> value="roles"><?php esc_html_e( 'Roles', 'editorial-access-manager' ); ?></option>
-				<option <?php selected( 'users', $post_id ? get_post_meta( $post->ID, 'eam_enable_custom_access', true ) : '' ); ?> value="users"><?php esc_html_e( 'Users', 'editorial-access-manager' ); ?></option>
+				<option <?php selected( 'roles', $post_id ? get_post_meta( $post_id, 'eam_enable_custom_access', true ) : '' ); ?> value="roles"><?php esc_html_e( 'Roles', 'editorial-access-manager' ); ?></option>
+				<option <?php selected( 'users', $post_id ? get_post_meta( $post_id, 'eam_enable_custom_access', true ) : '' ); ?> value="users"><?php esc_html_e( 'Users', 'editorial-access-manager' ); ?></option>
 			</select>
 		</div>
 
