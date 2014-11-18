@@ -8,3 +8,11 @@
 .column-editorial-access-manager {
 	width: 20%;
 }
+
+.widefat th, .widefat td {
+	overflow: visible; /* needed for bulk edit */
+}
+
+.inline-edit-row fieldset.inline-edit-eam label span.title {
+	width: 18em;
+}

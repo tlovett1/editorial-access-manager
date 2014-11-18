@@ -9,11 +9,11 @@
 	var usersControls = document.getElementById( 'eam_control_users' );
 
 	$rolesSelect.chosen( {
-		width: '90%'
+		width: 'auto'
 	});
 
 	$usersSelect.chosen( {
-		width: '90%'
+		width: 'auto'
 	});
 
 	function conditionallyRevealControls() {
