@@ -3,8 +3,8 @@ Contributors: tlovett1
 Donate link: http://www.taylorlovett.com
 Tags: editorial access management, user roles, user capabilities, role management, user permissions, administrator permissions
 Requires at least: 3.6
-Tested up to: 4.0
-Stable tag: 0.2.0
+Tested up to: 4.1
+Stable tag: 0.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,11 @@ Fork the plugin on [Github](http://github.com/tlovett1/editorial-access-manager)
 the sidebar.
 
 == Changelog ==
+
+= 0.3.0 =
+* Bulk edit access. Props [@marcochiesi](https://github.com/marcochiesi)
+* Filterable post types. Props [@marcochiesi](https://github.com/marcochiesi)
+* Custom capability to use EAM meta box. Props [@marcochiesi](https://github.com/marcochiesi)
 
 = 0.2.0 =
 * Add Italian language support. Props [@marcochiesi](https://github.com/marcochiesi)

@@ -16,7 +16,7 @@ class Editorial_Access_Manager {
 	/**
 	 * Activation
 	 *
-	 * @since 0.2.1
+	 * @since 0.3.0
 	 */
 	public static function activation() {
 		$roles = get_editable_roles();
@@ -29,7 +29,7 @@ class Editorial_Access_Manager {
 	/**
 	 * Deactivation
 	 *
-	 * @since 0.2.1
+	 * @since 0.3.0
 	 */
 	public static function deactivation() {
 		$roles = get_editable_roles();
@@ -67,7 +67,7 @@ class Editorial_Access_Manager {
 	/**
 	 * Return list of post types managed by the plugin
 	 *
-	 * @since 0.2.1
+	 * @since 0.3.0
 	 * @return array
 	 */
 	public function get_post_types() {
@@ -261,7 +261,9 @@ class Editorial_Access_Manager {
 	/**
 	 * Output form for bulk editing
 	 *
-	 * @since 0.2.1
+	 * @since 0.3.0
+	 * @param string $column_name
+	 * @param string $post_type
 	 * @return object
 	 */
 	public function action_bulk_edit_custom_box( $column_name, $post_type ) {
@@ -276,7 +278,7 @@ class Editorial_Access_Manager {
 	 * @param string $post_type
 	 * @param int $post_id
 	 * @param bool $bulk
-	 * @since 0.2.1
+	 * @since 0.3.0
 	 */
 	public function access_form( $post_type, $post_id = null, $bulk = true ) {
 		global $wp_roles;
