@@ -133,7 +133,7 @@ class Editorial_Access_Manager {
 
 						$allowed_roles = (array) get_post_meta( $post_id, 'eam_allowed_roles', true );
 
-						if ( count( array_diff( $user->roles, $allowed_roles ) ) >= 1 ) {
+						if ( empty( $user->roles ) || count( array_diff( $user->roles, $allowed_roles ) ) >= 1 ) {
 							$caps[] = 'do_not_allow';
 						} else {
 							$caps = array();
