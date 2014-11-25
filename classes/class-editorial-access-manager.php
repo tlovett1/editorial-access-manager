@@ -128,7 +128,7 @@ class Editorial_Access_Manager {
 				// If user is admin, we do nothing
 				if ( ! in_array( 'administrator', $user->roles ) ) {
 
-					if ( 'roles' == $enable_custom_access ) {
+					if ( 'roles' === $enable_custom_access ) {
 						// Limit access to whitelisted roles
 
 						$allowed_roles = (array) get_post_meta( $post_id, 'eam_allowed_roles', true );
@@ -138,7 +138,7 @@ class Editorial_Access_Manager {
 						} else {
 							$caps = array();
 						}
-					} elseif ( 'users' == $enable_custom_access ) {
+					} elseif ( 'users' === $enable_custom_access ) {
 						// Limit access to whitelisted users
 
 						$allowed_users = (array) get_post_meta( $post_id, 'eam_allowed_users', true );
