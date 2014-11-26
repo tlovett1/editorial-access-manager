@@ -48,6 +48,9 @@ the sidebar.
 
 == Changelog ==
 
+= 0.3.1 =
+* Fix bug where logged out user could edit role restricted post [@tripgrass](https://github.com/tripgrass)
+
 = 0.3.0 =
 * Bulk edit access. Props [@marcochiesi](https://github.com/marcochiesi)
 * Filterable post types. Props [@marcochiesi](https://github.com/marcochiesi)
