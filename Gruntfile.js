@@ -15,7 +15,8 @@ module.exports = function ( grunt ) {
 		jshint : {
 			options : {
 				smarttabs : true
-			}
+			},
+			all: ['js/*']
 		},
 		sass : {
 			dist : {
