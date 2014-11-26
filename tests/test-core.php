@@ -362,4 +362,42 @@ class EAMTestCore extends WP_UnitTestCase {
 
 		$this->assertTrue( ! ( current_user_can( 'edit_page', $page_id ) && current_user_can( 'publish_posts' ) && current_user_can( 'edit_others_posts' ) ) );
 	}
+
+	/**
+	 * Test an edit of a role restricted post by a logged out user
+	 *
+	 * @since 0.3.1
+	 */
+	public function testLoggedOutUserRoleAccess() {
+		wp_set_current_user( 0 );
+
+		$page_id = $this->factory->post->create( array( 'post_type' => 'page' ) );
+
+		$this->_configureAccess( $page_id, 'roles', array( 'editor' ) );
+
+		$_POST['post_ID'] = $page_id;
+		$_GET['post'] = $page_id;
+
+		$this->assertTrue( ! current_user_can( 'edit_page', $page_id ) );
+	}
+
+	/**
+	 * Test an edit of a user restricted post by a logged out user
+	 *
+	 * @since 0.3.1
+	 */
+	public function testLoggedOutUserUserAccess() {
+		$page_id = $this->factory->post->create( array( 'post_type' => 'page' ) );
+
+		$user = $this->_createAndSignInUser( 'author' );
+
+		$this->_configureAccess( $page_id, 'users', array(), array( $user->ID ) );
+
+		wp_set_current_user( 0 );
+
+		$_POST['post_ID'] = $page_id;
+		$_GET['post'] = $page_id;
+
+		$this->assertTrue( ! current_user_can( 'edit_page', $page_id ) );
+	}
 }
