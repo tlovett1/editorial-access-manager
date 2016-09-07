@@ -1,0 +1,8 @@
+{
+	"name": "editorial-access-manager-wp",
+	"type": "wordpress-plugin",
+	"description": "Granular editorial access control for all post types in WordPress",
+	"require": {
+		"composer/installers": "~1.0"
+	}
+}
