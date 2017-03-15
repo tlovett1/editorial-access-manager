@@ -163,23 +163,25 @@ class Editorial_Access_Manager {
 	 * @since 0.1.0
 	 */
 	public function action_admin_enqueue_scripts( $hook ) {
-
-		/**
-		 * Setup CSS stuff
-		 */
 		if ( 'post.php' == $hook || 'post-new.php' == $hook || 'edit.php' == $hook ) {
+			$post_types = $this->get_post_types();
+			if ( ! isset( $post_types[ get_current_screen()->post_type ] ) ) {
+				return;
+			}
+
+			/**
+			 * Setup CSS stuff
+			 */
 			if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 				$css_path = '/build/css/post-admin.css';
 			} else {
 				$css_path = '/build/css/post-admin.min.css';
 			}
 			wp_enqueue_style( 'eam-post-admin', plugins_url( $css_path, dirname( __FILE__ ) ) );
-		}
 
-		/**
-		 * Setup JS stuff
-		 */
-		if ( 'post.php' == $hook || 'post-new.php' == $hook || 'edit.php' == $hook ) { // edit.php needed for bulk edit
+			/**
+			 * Setup JS stuff
+			 */
 			if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 				$js_path = '/js/post-admin.js';
 			} else {
@@ -189,7 +191,6 @@ class Editorial_Access_Manager {
 			wp_register_script( 'jquery-chosen', plugins_url( '/bower_components/chosen_v1.1.0/chosen.jquery.js', dirname( __FILE__ ) ), array( 'jquery' ), '1.0', true );
 			wp_enqueue_script( 'eam-post-admin', plugins_url( $js_path, dirname( __FILE__ ) ), array( 'jquery-chosen' ), '1.0', true );
 		}
-
 	}
 
 	/**
