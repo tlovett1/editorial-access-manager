@@ -4,7 +4,9 @@
  * Plugin URI: http://www.taylorlovett.com
  * Description: Allow for granular editorial access control for all post types
  * Author: Taylor Lovett
- * Version: 0.3.1
+ * Version: 0.3.2
+ * Text Domain: editorial-access-manager
+ * Domain Path: /languages/
  * Author URI: http://www.taylorlovett.com
  */
 

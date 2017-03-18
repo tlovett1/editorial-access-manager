@@ -3,8 +3,8 @@ Contributors: tlovett1
 Donate link: http://www.taylorlovett.com
 Tags: editorial access management, user roles, user capabilities, role management, user permissions, administrator permissions
 Requires at least: 3.6
-Tested up to: 4.1
-Stable tag: 0.3.1
+Tested up to: 4.9
+Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,9 @@ Fork the plugin on [Github](http://github.com/tlovett1/editorial-access-manager)
 the sidebar.
 
 == Changelog ==
+
+= 0.3.2 =
+* Only enqueue scripts and styles when editing a public post type. Props [jeremyfelt](https://github.com/jeremyfelt)
 
 = 0.3.1 =
 * Fix bug where logged out user could edit role restricted post [@tripgrass](https://github.com/tripgrass)
