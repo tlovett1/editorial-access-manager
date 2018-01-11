@@ -312,6 +312,7 @@ class Editorial_Access_Manager {
 		if ( $allowed_roles === '' ) {
 			// get default allowed roles since we have never saved allowed roles for this post
 
+			$allowed_roles = array();
 			foreach ( $roles as $role_name => $role_array ) {
 				$role = get_role( $role_name );
 
