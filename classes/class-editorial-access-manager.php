@@ -327,10 +327,11 @@ class Editorial_Access_Manager {
 		if ( $allowed_users === '' ) {
 			// get default allowed users since we have never saved allowed users for this post
 
+			$allowed_users = array();
 			foreach ( $users as $user_object ) {
 
 				if ( user_can( $user_object->ID, $edit_others_posts_cap ) ) {
-					$allowed_users = $user_object->ID;
+					$allowed_users[] = $user_object->ID;
 				}
 			}
 
